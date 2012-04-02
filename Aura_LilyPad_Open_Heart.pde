@@ -28,6 +28,7 @@ char Pin[19] = {A5,A4,A3,A2,A1,A0,12,13,11,10,9,8,7,6,5,4,3,2,1};//Posiciones de
 void setup() {
   
   pinMode(0,INPUT);
+  digitalWrite(0,HIGH);
   
 }//Funcion de inicializacion de variables
 
