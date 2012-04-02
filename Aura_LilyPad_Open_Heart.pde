@@ -30,6 +30,9 @@ void setup() {
   pinMode(0,INPUT);
   digitalWrite(0,HIGH);
   
+  for(int Led = 0; Led < TotalLed; Led++)
+    pinMode(Pin[Led],OUTPUT);
+    
 }//Funcion de inicializacion de variables
 
 void loop() {
