@@ -24,6 +24,7 @@
 
 int TotalLed = 19;//Cantidad de LED
 char Pin[19] = {A5,A4,A3,A2,A1,A0,12,13,11,10,9,8,7,6,5,4,3,2,1};//Posiciones de led
+char nivel[19];
 
 void setup() {
   
@@ -38,3 +39,9 @@ void setup() {
 void loop() {
   
 }//Funcion que se repitira en el sistema
+
+void Limpiar(){
+  for(int Led = 0; Led < TotalLed; Led++)
+    nivel[Led] = 0;
+    
+}
