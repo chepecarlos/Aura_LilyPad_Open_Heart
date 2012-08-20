@@ -2,7 +2,7 @@
  Los estados del sitemas son 
  -  0 Programador
  -  1 Super PWM
- -  2
+ -  2 Super Pendulo
  -  3
  -  4
  -  5
@@ -48,9 +48,31 @@ void loop() {
   case 1:
     E1_SuperPWM();
     break;
+  case 2:
+    E2_SuperPendulo();
+    break;
+  case 3:
+  case 4:
+  case 5:
+  case 6:
+  case 7:
+  case 8:
+  case 9:
+  case 10:
+  case 11:
+  case 12:
+  case 13:
+  case 14:
   case 15:  
     E15_DiscoDisco();
     break;
+  case 16:
+  case 17:
+  case 18:
+  case 19:
+    E19_SuperEncendio();
+    break;  
+
   default:
     EEPROM.write(Aura,1);
     return;
@@ -144,6 +166,67 @@ void E1_SuperPWM(){
   while(digitalRead(0) == 1);
 }//El primer esta un pwm de todos los LED
 
+void E2_SuperPendulo(){
+  int x = 0;
+  int v = 1;
+  float t = 0;
+  Limpiar();
+  float t0 = millis();
+  float t1 = t0;
+  do{
+
+    if( t1 - t0 >= 75){
+      t0 = t1;
+      x = x + v;
+      if( x >= 19 || x <= 0)
+        v = -v;
+
+      for( int Led = 0; Led < TotalLed; Led++){
+        if(nivel[Led] > 0)
+          nivel[Led] /= 2;
+      }
+
+      nivel[x] = 10;
+
+    }
+
+    t1 = millis();
+    Actualizar();
+
+
+  }
+  while(digitalRead(0) == 1);
+}
+
+void E3_DoblePendulo(){
+  int x = 0;
+  int v = 1;
+  Limpiar();
+  float t0 = millis();
+  float t1 = t0;
+  do{
+
+    if( t1 - t0 >= 40){
+      t0 = t1;
+      x = x + v;
+      if( x >= 19 || x <= 0)
+        v = -v;
+
+      for( int Led = 0; Led < TotalLed; Led++){
+        if(nivel[Led] > 0)
+          nivel[Led] /= 2;
+      }
+
+      nivel[x] = 10;
+      nivel[TotalLed - x] = 10;
+    }
+
+    t1 = millis();
+    Actualizar();
+  }
+  while(digitalRead(0) == 1);
+}
+
 void E15_DiscoDisco(){
   Limpiar();
   Frecuencia = 10;
@@ -155,5 +238,16 @@ void E15_DiscoDisco(){
   }
   while(digitalRead(0) == 1);
 }//El primer esta un pwm de todos los LED
+
+
+void E19_SuperEncendio(){
+  Limpiar();
+  for(int Led = 0;  Led < TotalLed; Led++)
+    nivel[Led] = 10;
+  do{
+    Actualizar();
+  }
+  while(digitalRead(0) == 1);
+}
 
 
