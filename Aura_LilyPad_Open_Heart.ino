@@ -43,7 +43,7 @@ void setup() {
   }//Funcion de inicializacion de variables
 
   void loop() {
-    E15_SuperPWM();
+    E15_DiscoDisco();
   }//Funcion que se repitira en el sistema
 
 void Limpiar(){
@@ -68,7 +68,7 @@ void Actualizar(){
   }
 }//Enciende los led dependidendo del nivel que estes
 
-void E15_SuperPWM(){
+void E15_DiscoDisco(){
   int j = 0;
   int v = -1;
   int i;
