@@ -4,9 +4,9 @@
  -  1 Super PWM
  -  2 Super Pendulo
  -  3 Doble Pendulo
- -  4 Ecualizador
- -  5 Ecualizador Randon
- -  6
+ -  4 Doble Pendulo Modificado
+ -  5 Ecualizador
+ -  6 Ecualizador Randon
  -  7 LasVegas
  -  8 DiscoDisco
  -  9 Cometa
@@ -55,12 +55,13 @@ void loop() {
     E3_DoblePendulo();
     break;
   case 4:
-    E4_Ecualizador();
+    E4_DoblePenduloModificado();
     break;
   case 5:
-    E5_EcualizadorRandon();
+    E5_Ecualizador();
     break;
   case 6:
+    E6_EcualizadorRandon();
   case 7:
     E7_LasVegas();
     break;
@@ -243,7 +244,49 @@ void E3_DoblePendulo(){
   while(digitalRead(0) == 1);
 }
 
-void E4_Ecualizador(){
+void E4_DoblePenduloModificado(){
+
+
+  int x0 = 0;
+  int x1 = 10;
+  int t = 10;
+  Limpiar();
+  float t0 = millis();
+  float t1 = t0;
+  do{
+
+    if( t1 - t0 >= t){
+      t0 = t1;
+      x0++;
+      x1--;
+      if( x0 == x1){
+        x1--;
+        t = x0*7 + 7;
+      }
+      if( x0 >= TotalLed)
+        x0 = 0;
+      if( x1 <= 0)
+        x1 = 18;   
+
+      for( int i = 0; i < TotalLed; i++){
+        if(nivel[i] > 0)
+          nivel[i] /= 2;
+      }
+
+      nivel[x0] = 10;
+      nivel[x1] = 10;
+    }
+
+    t1 = millis();
+    Actualizar();
+
+
+  }
+  while(digitalRead(0) == 1);
+}
+
+
+void E5_Ecualizador(){
   int x = -1;
   int Centro = 9;
   int v = 1; 
@@ -273,7 +316,7 @@ void E4_Ecualizador(){
   while(digitalRead(0) == 1);
 }
 
-void E5_EcualizadorRandon(){
+void E6_EcualizadorRandon(){
   int x = -1;
   int c = 9;
   int v = 1; 
