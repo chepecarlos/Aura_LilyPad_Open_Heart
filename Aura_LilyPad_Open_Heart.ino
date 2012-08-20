@@ -52,8 +52,14 @@ void loop() {
     E2_SuperPendulo();
     break;
   case 3:
+    E3_DoblePendulo();
+    break;
   case 4:
+    E4_Ecualizador();
+    break;
   case 5:
+    E5_EcualizadorRandon();
+    break;
   case 6:
   case 7:
   case 8:
@@ -68,7 +74,11 @@ void loop() {
     break;
   case 16:
   case 17:
+    E17_Randon();
+    break;
   case 18:
+    E18_RandonLento();
+    break;
   case 19:
     E19_SuperEncendio();
     break;  
@@ -227,6 +237,67 @@ void E3_DoblePendulo(){
   while(digitalRead(0) == 1);
 }
 
+void E4_Ecualizador(){
+  int x = -1;
+  int Centro = 9;
+  int v = 1; 
+  float t0 = millis();
+  float t1 = t0;
+  do{
+    t1 = millis();
+
+    if( t1 - t0 >= ((v > 0) ? 200 : 75)){
+      t0 = t1;
+      x += v;
+      if(x ==  10 || x == -3)
+        v = -v;
+      for( int Led = 0; Led < TotalLed; Led++){
+        if(nivel[Led] > 0)
+          nivel[Led] /= 2;
+      }
+      for(int i = 0; i < 10; i++){
+        if( i <= x){
+          nivel[Centro + i] = 10;
+          nivel[Centro - i] = 10;
+        }
+      } 
+    }
+    Actualizar();
+  }
+  while(digitalRead(0) == 1);
+}
+
+void E5_EcualizadorRandon(){
+  int x = -1;
+  int c = 9;
+  int v = 1; 
+  float t0 = millis();
+  float t1 = t0;
+  do{
+    t1 = millis();
+
+    if( t1 - t0 >= 500 ){
+      t0 = t1;
+      x = random(-5, 12);
+
+      for( int i = 0; i < TotalLed; i++){
+        if(nivel[i] > 0)
+          nivel[i] /= 5;
+      }
+      for(int i = 0; i < 10; i++){
+        if( i <= x){
+          nivel[c + i] = 10;
+          nivel[c - i] = 10;
+        }
+      } 
+    }
+    Actualizar();
+  }
+  while(digitalRead(0) == 1);
+
+
+}
+
 void E15_DiscoDisco(){
   Limpiar();
   Frecuencia = 10;
@@ -239,6 +310,52 @@ void E15_DiscoDisco(){
   while(digitalRead(0) == 1);
 }//El primer esta un pwm de todos los LED
 
+
+void E17_Randon(){
+  Limpiar();
+
+  do{
+
+    for( int i = 0; i < TotalLed; i++){
+      if(nivel[i] > 0)
+        nivel[i] /= 2;
+    }
+
+    for( int i = 0; i < 3; i++){
+      nivel[random(0, TotalLed)] = 10;
+    }
+
+    Actualizar();
+  }
+  while(digitalRead(0) == 1);
+
+}
+
+void E18_RandonLento(){
+  Limpiar();
+  float t0 = millis();
+  float t1 = t0;
+  do{
+    t1 = millis();
+    if ( t1 - t0 >= 100){
+      t0 = t1;
+      for( int i = 0; i < TotalLed; i++){
+        if(nivel[i] > 0)
+          nivel[i] /= 2;
+      }
+
+      for( int i = 0; i < 3; i++){
+        nivel[random(0, TotalLed)] = 10;
+        nivel[random(0, TotalLed)] = 5;
+        nivel[random(0, TotalLed)] = 0;
+      }
+    }
+
+    Actualizar();
+  }
+  while(digitalRead(0) == 1);
+
+}
 
 void E19_SuperEncendio(){
   Limpiar();
