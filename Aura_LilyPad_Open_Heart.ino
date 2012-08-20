@@ -3,23 +3,23 @@
  -  0 Programador
  -  1 Super PWM
  -  2 Super Pendulo
- -  3
- -  4
- -  5
+ -  3 Doble Pendulo
+ -  4 Ecualizador
+ -  5 Ecualizador Randon
  -  6
- -  7
- -  8
- -  9
- - 10
+ -  7 LasVegas
+ -  8 DiscoDisco
+ -  9 Cometa
+ - 10 CometaDoble
  - 11
  - 12
  - 13
  - 14
- - 15 Disco Disco
+ - 15
  - 16
- - 17
- - 18
- - 19
+ - 17 Randon
+ - 18 Randon Lento
+ - 19 Super Encendio
  */
 
 #include <EEPROM.h>
@@ -62,16 +62,22 @@ void loop() {
     break;
   case 6:
   case 7:
+    E7_LasVegas();
+    break;
   case 8:
+    E8_DiscoDisco();
+    break;
   case 9:
+    E9_Cometa();
+    break;
   case 10:
+    E10_CometaDoble();
+    break;
   case 11:
   case 12:
   case 13:
   case 14:
-  case 15:  
-    E15_DiscoDisco();
-    break;
+  case 15:     
   case 16:
   case 17:
     E17_Randon();
@@ -298,7 +304,35 @@ void E5_EcualizadorRandon(){
 
 }
 
-void E15_DiscoDisco(){
+void E7_LasVegas(){
+
+  Limpiar();
+
+  float t0 = millis();
+  float t1 = t0;
+
+  for( int Led = 0; Led < TotalLed; Led++){
+    if( Led % 2 == 0)
+      nivel[Led]= 10;
+    else 
+      nivel[Led] = -10; 
+  } 
+
+  do{
+
+    t1 = millis();
+    if( t1- t0 >=100){  
+      t0 = t1;  
+      for( int Led = 0; Led < TotalLed; Led++)
+        nivel[Led] = -nivel[Led];
+      Actualizar();
+    }
+
+  }
+  while(digitalRead(0) == 1);
+}
+
+void E8_DiscoDisco(){
   Limpiar();
   Frecuencia = 10;
   for(int Led = 0; Led < TotalLed; Led++){
@@ -310,6 +344,75 @@ void E15_DiscoDisco(){
   while(digitalRead(0) == 1);
 }//El primer esta un pwm de todos los LED
 
+void E9_Cometa(){
+
+  float t0 = millis();
+  float t1 = t0;
+
+  int x = 0;
+  do{
+    t1 = millis();
+
+    if(t1 - t0 >= 50){
+      t0 = t1;
+
+      for( int Led = 0; Led < TotalLed; Led++){
+        if(nivel[Led] > 0)
+          nivel[Led] -= 3;
+      }
+
+      nivel[x] = 10;
+      if( x < TotalLed -1  ) 
+        x++;
+      else
+        x = 0;
+    }
+
+
+    Actualizar();
+
+  }
+  while(digitalRead(0) == 1);
+
+}
+
+void E10_CometaDoble(){
+
+  float t0 = millis();
+  float t1 = t0;
+
+  int x = 0;
+  int y = 9;
+  do{
+    t1 = millis();
+
+    if(t1 - t0 >= 40){
+      t0 = t1;
+      for( int i = 0; i < TotalLed; i++){
+        if(nivel[i] > 0)
+          nivel[i] -= 3;
+
+      }
+
+      nivel[x] = 10;
+      nivel[y] = 10;
+
+      if( x < TotalLed -1  )
+        x++;
+      else
+        x = 0;
+      if( y < TotalLed - 1 )
+        y++;
+      else
+        y = 0;
+
+    }
+    Actualizar();
+
+  }
+  while(digitalRead(0) == 1);
+
+}
 
 void E17_Randon(){
   Limpiar();
@@ -366,5 +469,3 @@ void E19_SuperEncendio(){
   }
   while(digitalRead(0) == 1);
 }
-
-
