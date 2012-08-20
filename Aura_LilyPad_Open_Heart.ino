@@ -44,7 +44,16 @@ void setup() {
 }//Funcion de inicializacion de variables
 
 void loop() {
-  E15_DiscoDisco();
+  switch( EEPROM.read(Aura)){
+  case 15:  
+    E15_DiscoDisco();
+    break;
+  default:
+    EEPROM.write(Aura,15);
+    return;
+    break;
+  }
+  Leer();
 }//Funcion que se repitira en el sistema
 
 void Limpiar(){
@@ -65,6 +74,49 @@ void Actualizar(){
   }
 }//Enciende los led dependidendo del nivel que estes
 
+void Leer(){
+  Limpiar();
+  Actualizar();
+  int cont = 0;
+  float t0 = millis();
+  float t1 = t0;
+  int BPasado = 0;
+  int BPresente = 0;
+  do{
+    if( t1 == t0){
+      for( int Led = 0; Led < TotalLed; Led++){
+        nivel[Led] = ( Led + 1 <= EEPROM.read(Aura)) ? 10 : 0;
+      } 
+    }
+
+    t1 = millis();
+    BPresente = digitalRead(0);
+
+    if(BPresente > BPasado){
+      EEPROM.write(Aura, EEPROM.read(Aura) + 1);
+      cont = 0;
+      if( EEPROM.read(Aura) > TotalLed){
+        EEPROM.write(Aura, 1);
+      }
+      t0 = t1;  
+    }
+
+    BPasado = BPresente; 
+
+    Actualizar();
+    if( (t1 - t0) >= 1000){
+      t0 = t1;
+      cont++;
+      Limpiar();
+      for( int i = 0; i<20;i++){
+        Actualizar();
+      }
+    }
+
+  }
+  while( cont <= 3);
+}
+
 void E15_DiscoDisco(){
   Limpiar();
   Frecuencia = 10;
@@ -76,6 +128,5 @@ void E15_DiscoDisco(){
   }
   while(digitalRead(0) == 1);
 }//El primer esta un pwm de todos los LED
-
 
 
