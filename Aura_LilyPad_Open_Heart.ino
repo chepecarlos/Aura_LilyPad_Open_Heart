@@ -1,7 +1,7 @@
 /*
  Los estados del sitemas son 
- -  0 
- -  1
+ -  0 Programador
+ -  1 Super PWM
  -  2
  -  3
  -  4
@@ -45,11 +45,14 @@ void setup() {
 
 void loop() {
   switch( EEPROM.read(Aura)){
+  case 1:
+    E1_SuperPWM();
+    break;
   case 15:  
     E15_DiscoDisco();
     break;
   default:
-    EEPROM.write(Aura,15);
+    EEPROM.write(Aura,1);
     return;
     break;
   }
@@ -116,6 +119,30 @@ void Leer(){
   }
   while( cont <= 3);
 }
+
+void E1_SuperPWM(){
+  int LedNivel = 0;
+  int v = -1;
+  float t0 = millis();
+  float t1 = t0;
+  Limpiar();
+  do{
+    t1 = millis();
+
+    if( t1 - t0 >= 200){
+      t0 = millis();
+      for(int Led = 0; Led < TotalLed; Led++){
+        nivel[Led] = LedNivel;
+      }
+
+      if( LedNivel == -1 || LedNivel == 12)
+        v = -v;
+      LedNivel = LedNivel + v;  
+    }
+    Actualizar();
+  }
+  while(digitalRead(0) == 1);
+}//El primer esta un pwm de todos los LED
 
 void E15_DiscoDisco(){
   Limpiar();
